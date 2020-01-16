@@ -1,5 +1,5 @@
-# service-session
-Handles UUID generation and keeps track of active user count
+# service-xtea
+Works as a database you can read/write OSRS xtea keys to
   
 # Setup  
   
@@ -11,6 +11,5 @@ OR
 use the shadowJar gradle task, and you can use build/libs/-all jar to launch using the java -jar command, no tomcat.  
   
 The following endpoints exist:  
-http://localhost:8080/session/new : Generates a new session and returns it to the requester  
-http://localhost:8080/session/ping?uuid=uuid-here : Refreshes the session countdown for a given uuid  
-http://localhost:8080/session/count : Returns the number of active users to the requester
+http://localhost:8081/xtea/submit : Submits a key to the database
+http://localhost:8081/xtea/get : Returns all currently collected keys
