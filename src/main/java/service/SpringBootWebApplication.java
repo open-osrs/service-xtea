@@ -33,14 +33,18 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.server.ConfigurableWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
+import java.util.Collections;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableScheduling
@@ -89,5 +93,15 @@ public class SpringBootWebApplication extends SpringBootServletInitializer
 	public static void main(String[] args)
 	{
 		SpringApplication.run(SpringBootWebApplication.class, args);
+	}
+
+	@Component
+	public class ServerPortCustomizer
+			implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
+
+		@Override
+		public void customize(ConfigurableWebServerFactory factory) {
+			factory.setPort(8081);
+		}
 	}
 }
