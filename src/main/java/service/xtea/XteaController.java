@@ -37,11 +37,11 @@ import service.SpringBootWebApplication;
 @RequestMapping("/xtea")
 public class XteaController
 {
-	private HashMap<Integer, XteaEntry> xteas = new HashMap<>();
+	private HashMap<Integer, int[]> xteas = new HashMap<>();
 	private Store store;
 
 	@RequestMapping("/get")
-	public HashMap<Integer, XteaEntry> get()
+	public HashMap<Integer, int[]> get()
 	{
 		return xteas;
 	}
@@ -50,7 +50,7 @@ public class XteaController
 	public void pingSession(@RequestParam int region, int key1, int key2, int key3, int key4)
 	{
 		if (checkKeys(region, new int[]{key1,key2,key3,key4}))
-		xteas.put(region, new XteaEntry(new int[]{key1,key2,key3,key4}));
+		xteas.put(region, new int[]{key1,key2,key3,key4});
 	}
 
 	private boolean checkKeys(int regionId, int[] keys)
