@@ -30,6 +30,7 @@ val jar by tasks.getting(Jar::class) {
 
 application {
     mainClassName = "service.SpringBootWebApplication"
+    applicationDefaultJvmArgs = listOf("-Xmx2g")
 }
 
 
