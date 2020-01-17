@@ -1,6 +1,7 @@
 plugins {
     id("com.github.johnrengelman.shadow") version "5.2.0"
     java
+    application
 }
 
 group = "com.openosrs"
@@ -26,6 +27,11 @@ val jar by tasks.getting(Jar::class) {
         attributes["Main-Class"] = "service.SpringBootWebApplication"
     }
 }
+
+application {
+    mainClassName = "service.SpringBootWebApplication"
+}
+
 
 configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_11

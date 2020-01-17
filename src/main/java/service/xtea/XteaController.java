@@ -47,7 +47,7 @@ public class XteaController
 	}
 
 	@RequestMapping("/submit")
-	public void pingSession(@RequestParam int region, int key1, int key2, int key3, int key4)
+	public void submitRegion(@RequestParam int region, int key1, int key2, int key3, int key4)
 	{
 		if (checkKeys(region, new int[]{key1,key2,key3,key4}))
 		xteas.put(region, new int[]{key1,key2,key3,key4});
