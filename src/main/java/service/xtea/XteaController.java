@@ -24,14 +24,21 @@
  */
 package service.xtea;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Logger;
+
+import net.runelite.cache.IndexType;
+import net.runelite.cache.fs.*;
 import org.springframework.web.bind.annotation.*;
+import service.SpringBootWebApplication;
 
 @RestController
 @RequestMapping("/xtea")
 public class XteaController
 {
 	private HashMap<Integer, XteaEntry> xteas = new HashMap<>();
+	private Store store;
 
 	@RequestMapping("/get")
 	public HashMap<Integer, XteaEntry> get()
@@ -42,6 +49,45 @@ public class XteaController
 	@RequestMapping("/submit")
 	public void pingSession(@RequestParam int region, int key1, int key2, int key3, int key4)
 	{
-		xteas.put(region, new XteaEntry(key1, key2, key3, key4));
+		if (checkKeys(region, new int[]{key1,key2,key3,key4}))
+		xteas.put(region, new XteaEntry(new int[]{key1,key2,key3,key4}));
+	}
+
+	private boolean checkKeys(int regionId, int[] keys)
+	{
+		try {
+			store = SpringBootWebApplication.store;
+			Storage storage = store.getStorage();
+			storage.load(store);
+			Index maps = store.getIndex(IndexType.MAPS);
+
+			int x = regionId >>> 8;
+			int y = regionId & 0xFF;
+
+			String archiveName = new StringBuilder()
+					.append('l')
+					.append(x)
+					.append('_')
+					.append(y)
+					.toString();
+			Archive archive = maps.findArchiveByName(archiveName);
+
+			byte[] archiveData = storage.loadArchive(archive);
+
+			try
+			{
+				maps.findArchiveByName(archiveName).decompress(archiveData, keys);
+				return true;
+			}
+			catch (Exception e)
+			{
+				Logger.getAnonymousLogger().warning("Bad keys submitted for region: " + regionId);
+				return false;
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

@@ -27,6 +27,7 @@ package service;
 
 import ch.qos.logback.classic.LoggerContext;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.cache.fs.Store;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 import org.springframework.boot.SpringApplication;
@@ -44,13 +45,17 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
-import java.util.Collections;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Logger;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableScheduling
 @Slf4j
 public class SpringBootWebApplication extends SpringBootServletInitializer
 {
+	public static Store store;
+
 	@Bean
 	protected ServletContextListener listener()
 	{
@@ -92,6 +97,13 @@ public class SpringBootWebApplication extends SpringBootServletInitializer
 
 	public static void main(String[] args)
 	{
+		try {
+			Logger.getAnonymousLogger().info("Initializing cache store for key verification");
+			store = new Store(new File(args[0]));
+		} catch (IOException e) {
+			System.out.println("argo0: valid cache_dir not provided, keys cannot be verified. shutting down.");
+			System.exit(1);
+		}
 		SpringApplication.run(SpringBootWebApplication.class, args);
 	}
 

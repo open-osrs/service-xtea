@@ -24,57 +24,51 @@
  */
 package service.xtea;
 
-import jdk.nashorn.internal.objects.annotations.Constructor;
 import lombok.AllArgsConstructor;
-
-import java.time.Instant;
 
 @AllArgsConstructor
 public class XteaEntry
 {
-	private int key1;
-	private int key2;
-	private int key3;
-	private int key4;
+	private int[] keys;
 
 	public int getKey1()
 	{
-		return key1;
+		return keys[0];
 	}
 
 	public void setKey1(int key1)
 	{
-		this.key1 = key1;
+		this.keys[0] = key1;
 	}
 
 	public int getKey2()
 	{
-		return key2;
+		return keys[1];
 	}
 
 	public void setKey2(int key2)
 	{
-		this.key2 = key2;
+		this.keys[1] = key2;
 	}
 
 	public int getKey3()
 	{
-		return key3;
+		return keys[2];
 	}
 
 	public void setKey3(int key3)
 	{
-		this.key3 = key3;
+		this.keys[2] = key3;
 	}
 
 	public int getKey4()
 	{
-		return key4;
+		return keys[3];
 	}
 
 	public void setKey4(int key4)
 	{
-		this.key4 = key4;
+		this.keys[3] = key4;
 	}
 
 }
