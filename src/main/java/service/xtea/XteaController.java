@@ -24,16 +24,21 @@
  */
 package service.xtea;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.runelite.cache.IndexType;
 import net.runelite.cache.fs.Archive;
 import net.runelite.cache.fs.Index;
 import net.runelite.cache.fs.Storage;
 import net.runelite.cache.fs.Store;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import service.SpringBootWebApplication;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -41,7 +46,8 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/xtea")
 public class XteaController {
-    private HashMap<Integer, int[]> xteas = new HashMap<>();
+    public static HashMap<Integer, int[]> xteas = new HashMap<>();
+    private Gson backupWriter = new GsonBuilder().setPrettyPrinting().create();
     private Store store;
 	private Storage storage;
 	private Index maps;
@@ -99,5 +105,16 @@ public class XteaController {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Scheduled(fixedDelay = 10 * 60 * 1000)
+    private void backupSounds()
+    {
+        try (FileWriter writer = new FileWriter(new File("./xteas.json")))
+        {
+            writer.write(backupWriter.toJson(xteas));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -26,6 +26,8 @@
 package service;
 
 import ch.qos.logback.classic.LoggerContext;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.cache.fs.Store;
 import org.slf4j.ILoggerFactory;
@@ -40,13 +42,15 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
+import service.xtea.XteaController;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
@@ -103,6 +107,15 @@ public class SpringBootWebApplication extends SpringBootServletInitializer
 		} catch (IOException e) {
 			System.out.println("argo0: valid cache_dir not provided, keys cannot be verified. shutting down.");
 			System.exit(1);
+		}
+		try {
+			Type type = new TypeToken<HashMap<Integer, int[]>>(){}.getType();
+			BufferedReader bufferedReader = new BufferedReader(new FileReader("./xteas.json"));
+			Gson gson = new Gson();
+			XteaController.xteas = gson.fromJson(bufferedReader, type);
+		} catch (FileNotFoundException e) {
+			log.warn("Xteas backup not found, starting new databse.");
+			e.printStackTrace();
 		}
 		SpringApplication.run(SpringBootWebApplication.class, args);
 	}
